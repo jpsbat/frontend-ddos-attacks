@@ -1,31 +1,24 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import os
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
-
-# Importações para Rede Neural
-import tensorflow as tf
 from tensorflow.keras.models import Sequential # type: ignore
 from tensorflow.keras.layers import Dense # type: ignore
 from tensorflow.keras.optimizers import Adam # type: ignore
 from tensorflow.keras.utils import to_categorical # type: ignore
 
-# st.set_option('deprecation.showPyplotGlobalUse', False) # Comentado: Opção obsoleta causa erro
+from utils import obter_colunas, preparar_dados
 
-# Título da Aplicação
-st.title("Detecção Inteligente de Ataques DDoS com Machine Learning")
+st.title("Detecção Inteligente de Ataques DDoS Utilizando Aprendizado de Máquina")
 st.markdown("""
-Este é um dashboard interativo para demonstrar a detecção de ataques DDoS utilizando modelos de Machine Learning,
-baseado no projeto de TCC.
+Este é um dashboard interativo para demonstrar a detecção de ataques DDoS utilizando Aprendizado de Máquina,
+baseado no projeto de Trabalho de Conclusão de Curso.
 """)
 
-# --- Funções de Carregamento e Pré-processamento (Adaptadas do Notebook) ---
 @st.cache_data
 def load_and_preprocess_data(uploaded_file):
     if uploaded_file is not None:
@@ -45,38 +38,29 @@ def load_and_preprocess_data(uploaded_file):
         st.write(f"Shape do dataset: {df.shape}")
         st.write("Primeiras 5 linhas do dataset:", df.head())
 
-        df.replace([np.inf, -np.inf], np.nan, inplace=True)
-        df.dropna(inplace=True)
-
-        if 'Label' not in df.columns:
-            st.error("A coluna 'Label' não foi encontrada no dataset. Esta coluna é necessária para o treinamento.")
+        try:
+            X, y, le, num_classes, col_valor_unico, col_corr_alta = preparar_dados(df)
+        except Exception as e:
+            st.error(str(e))
             return None, None, None, None
 
-        st.subheader("Pré-processamento dos Dados")
-        le = LabelEncoder()
-        df['Label_Encoded'] = le.fit_transform(df['Label'])
-        st.write("Coluna 'Label' codificada.")
-        st.write("Contagem de valores para 'Label' após codificação:", df['Label_Encoded'].value_counts())
-        
-        num_classes = df['Label_Encoded'].nunique()
+        if col_valor_unico:
+            st.write(f"Colunas removidas por valor único: {col_valor_unico}")
+        if col_corr_alta:
+            st.write(f"Colunas removidas por alta correlação: {col_corr_alta}")
 
-        X = df.drop(['Label', 'Label_Encoded'], axis=1)
-        y = df['Label_Encoded']
-
-        numeric_cols = X.select_dtypes(include=np.number).columns
-        if len(numeric_cols) == 0:
-            st.error("Nenhuma coluna numérica encontrada para aplicar o MinMaxScaler.")
-            return None, None, None, None
-            
-        scaler = MinMaxScaler()
-        X[numeric_cols] = scaler.fit_transform(X[numeric_cols])
+        st.write("Contagem de valores para 'Label' após codificação:", y.value_counts())
         st.write("Features numéricas normalizadas com MinMaxScaler.")
+
+        col_cat, col_num, cat_alta_card = obter_colunas(df)
+        st.write(f"Colunas categóricas: {col_cat}")
+        st.write(f"Colunas numéricas: {col_num}")
+        st.write(f"Colunas categóricas com alta cardinalidade: {cat_alta_card}")
 
         return X, y, le, num_classes
     return None, None, None, None
 
-# --- Funções de Treinamento e Avaliação ---
-@st.cache_resource # Usar cache para modelos treinados
+@st.cache_resource
 def train_random_forest(X_train, y_train):
     model = RandomForestClassifier(n_estimators=50, random_state=42, max_depth=10, min_samples_leaf=5)
     model.fit(X_train, y_train)
@@ -84,28 +68,21 @@ def train_random_forest(X_train, y_train):
 
 @st.cache_resource
 def train_neural_network(X_train, y_train, num_classes, input_dim):
-    # Converter y_train para one-hot encoding
     y_train_categorical = to_categorical(y_train, num_classes=num_classes)
-    
     model = Sequential()
     model.add(Dense(128, input_dim=input_dim, activation='relu'))
     model.add(Dense(64, activation='relu'))
-    model.add(Dense(num_classes, activation='softmax')) # Camada de saída com softmax para classificação multiclasse
-    
+    model.add(Dense(num_classes, activation='softmax'))
     model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
-    
-    # Treinamento (simplificado para o dashboard)
-    # Idealmente, X_val e y_val seriam passados para validation_data
     with st.spinner("Treinando a Rede Neural... Este processo pode ser demorado."):
-        model.fit(X_train, y_train_categorical, epochs=10, batch_size=32, verbose=0) # verbose=0 para não poluir o output do Streamlit
+        model.fit(X_train, y_train_categorical, epochs=10, batch_size=32, verbose=0)
     return model
 
 def evaluate_model(model, X_test, y_test, le, model_type="sklearn"):
     if model_type == "keras":
-        # Para modelos Keras, a predição retorna probabilidades
         y_pred_proba = model.predict(X_test)
         preds = np.argmax(y_pred_proba, axis=1)
-    else: # model_type == "sklearn"
+    else:
         preds = model.predict(X_test)
         
     accuracy = accuracy_score(y_test, preds)
@@ -121,8 +98,6 @@ def evaluate_model(model, X_test, y_test, le, model_type="sklearn"):
 
     st.subheader("Relatório de Classificação")
     try:
-        # Tentar obter os nomes das classes originais se o LabelEncoder foi usado para y
-        # e se y_test ainda não está one-hot encoded
         target_names = [str(cls) for cls in le.classes_]
         report = classification_report(y_test, preds, target_names=target_names, zero_division=0)
         st.text(report)
@@ -142,10 +117,8 @@ def evaluate_model(model, X_test, y_test, le, model_type="sklearn"):
     plt.xlabel('Predito')
     st.pyplot(fig)
 
-# --- Interface do Usuário Streamlit ---
 st.sidebar.header("Configurações do Detector de DDoS")
 
-# 1. Upload do arquivo de dados
 st.sidebar.subheader("1. Carregar Dados")
 uploaded_file = st.sidebar.file_uploader("Escolha um arquivo Parquet ou CSV", type=["parquet", "csv"])
 
@@ -159,11 +132,9 @@ if uploaded_file:
         st.write(f"Número de classes detectadas: {num_classes}")
         st.write(f"Dimensão dos dados de entrada (features): {X_train.shape[1]}")
 
-        # 2. Seleção do Modelo
         st.sidebar.subheader("2. Selecionar Modelo")
         model_choice = st.sidebar.selectbox("Escolha o modelo:", ["RandomForest", "Rede Neural (Keras)"])
 
-        # 3. Treinamento e Avaliação
         if st.sidebar.button("Treinar e Avaliar Modelo"):
             if model_choice == "RandomForest":
                 with st.spinner("Treinando o modelo RandomForest..."):
@@ -174,8 +145,6 @@ if uploaded_file:
                 if num_classes <= 1:
                     st.error("Para a Rede Neural, o número de classes deve ser maior que 1. Verifique a coluna 'Label' do seu dataset.")
                 else:
-                    # Assegurar que X_train e X_test sejam DataFrames para Keras ou convertê-los para NumPy arrays
-                    # Keras geralmente funciona bem com NumPy arrays
                     X_train_np = X_train.to_numpy() if isinstance(X_train, pd.DataFrame) else X_train
                     X_test_np = X_test.to_numpy() if isinstance(X_test, pd.DataFrame) else X_test
                     y_train_np = y_train.to_numpy() if isinstance(y_train, pd.Series) else y_train
@@ -190,5 +159,4 @@ else:
     st.info("Por favor, carregue um arquivo de dados para começar.")
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("Desenvolvido como parte do TCC - Detecção Inteligente de Ataques DDoS")
-
+st.sidebar.markdown("Trabalho de Conclusão de Curso - Detecção Inteligente de Ataques DDoS Utilizando Aprendizado de Máquina")
