@@ -52,7 +52,6 @@ shutil.copy("kaggle.json", os.path.expanduser("~/.kaggle/"))
 import stat
 os.chmod(os.path.expanduser("~/.kaggle/kaggle.json"), stat.S_IRUSR | stat.S_IWUSR)
 
-# Download the dataset using the Kaggle API
 from kaggle.api.kaggle_api_extended import KaggleApi # type: ignore
 
 api = KaggleApi()
