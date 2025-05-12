@@ -33,7 +33,7 @@ O desenvolvimento deste projeto envolveu o uso das seguintes tecnologias e bibli
 *   **TensorFlow (com Keras API):** Para a construção, treinamento e avaliação do modelo de Rede Neural Artificial.
 *   **Matplotlib e Seaborn:** Para a geração de gráficos e visualizações, como a matriz de confusão.
 *   **PyArrow:** Para a leitura eficiente de arquivos no formato Parquet.
-*   **Jupyter Notebook/Google Colab:** Utilizado para a exploração inicial dos dados, desenvolvimento e experimentação dos modelos de machine learning (conforme o arquivo `DDOS_Pred (1).ipynb` fornecido).
+*   **Jupyter Notebook/Google Colab:** Utilizado para a exploração inicial dos dados, desenvolvimento e experimentação dos modelos de machine learning.
 *   **Visual Studio Code (VS Code):** Ambiente de desenvolvimento integrado (IDE) recomendado para edição do código.
 *   **Git e GitHub (Recomendado):** Para versionamento de código e colaboração (não abordado diretamente, mas uma boa prática).
 
@@ -66,14 +66,14 @@ O dashboard interativo (`app.py`) oferece as seguintes funcionalidades:
 
 ## 5. Estrutura do Projeto
 
-A estrutura de pastas e arquivos recomendada para o projeto é:
+A estrutura de pastas e arquivos do projeto é:
 
 ```
 ddos-attacks/       # Diretório raiz do projeto
 ├── app.py                     # Código principal da aplicação
-├── README.md                  # Este arquivo
+├── ddos_pred.py                     # Código do notebook
+├── utils.py                     # Funções importadas do notebook
 ├── requirements.txt           # Arquivo com as dependências do Python
-└── venv/                        # Pasta do ambiente virtual Python
 ```
 
 O arquivo `DDOS_Pred (1).ipynb` (notebook Jupyter original) serve como base para a lógica de processamento e modelagem implementada no `app.py`.

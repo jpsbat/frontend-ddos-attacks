@@ -15,7 +15,7 @@ from utils import obter_colunas, preparar_dados
 
 st.title("Detecção Inteligente de Ataques DDoS Utilizando Aprendizado de Máquina")
 st.markdown("""
-Este é um dashboard interativo para demonstrar a detecção de ataques DDoS utilizando Aprendizado de Máquina,
+Este dashboard interativo foi desenvolvido para demonstrar a detecção de ataques de negação de serviço distribuído utilizando Machine Learning. O objetivo é apresentar um pipeline completo que inclui pré-processamento de dados, treinamento de modelos e avaliação de desempenho.
 baseado no projeto de Trabalho de Conclusão de Curso.
 """)
 
@@ -159,4 +159,7 @@ else:
     st.info("Por favor, carregue um arquivo de dados para começar.")
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("Trabalho de Conclusão de Curso - Detecção Inteligente de Ataques DDoS Utilizando Aprendizado de Máquina")
+st.sidebar.markdown("Detecção Inteligente de Ataques DDoS Utilizando Aprendizado de Máquina")
+
+from ddos_model import exibir_contexto_tecnico
+exibir_contexto_tecnico()
