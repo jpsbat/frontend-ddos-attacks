@@ -1,3 +1,7 @@
-venv
-.gitignore
-__pycache__
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.vscode/
+.idea/
