@@ -18,7 +18,7 @@ def calcular_status_seguranca(metricas):
     media = np.mean(valores)
     
     if 0.90 <= media <= 1.0:
-        return media, "Ataque detectado", "red"
+        return media, "Ataque detectado!", "red"
     elif 0.60 <= media < 0.90:
         return media, "Movimentação suspeita detectada", "orange"
     elif 0.0 <= media < 0.60:
