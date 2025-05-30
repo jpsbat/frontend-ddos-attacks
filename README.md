@@ -2,8 +2,8 @@
 
 ## Trabalho de Conclusão de Curso
 
-**Autoria:** [João Pedro Santos Batista, Vinicius Gonçalves Angelo, Vinicius Ribeiro Silva]
-**Orientação:** Prof. Dra. Andréia Damasio Leles
+**Autoria:** João Pedro Santos Batista, Vinicius Gonçalves Angelo, Vinicius Ribeiro Silva  
+**Orientação:** Prof. Dra. Andréia Damasio Leles  
 **Instituição:** Centro Universitário Facens
 
 ---
@@ -14,110 +14,147 @@ Este projeto de Trabalho de Conclusão de Curso (TCC) foca na **Detecção Intel
 
 Para alcançar este objetivo, foi desenvolvido um dashboard interativo utilizando a biblioteca Streamlit em Python. Este dashboard permite:
 
-*   Carregar datasets de tráfego de rede (nos formatos Parquet ou CSV).
-*   Realizar o pré-processamento dos dados, incluindo limpeza, codificação de rótulos e normalização.
-*   Treinar e avaliar dois modelos de Machine Learning para a detecção de ataques:
-    *   RandomForest Classifier
-    *   Rede Neural Artificial (implementada com Keras/TensorFlow)
-*   Visualizar as métricas de desempenho dos modelos, como acurácia, precisão, recall, F1-score, relatório de classificação e matriz de confusão.
+* Carregar datasets de tráfego de rede (nos formatos Parquet ou CSV).
+* Realizar análise exploratória completa dos dados carregados.
+* Executar pré-processamento automatizado, incluindo limpeza, remoção de correlações altas, codificação de rótulos e normalização.
+* Treinar e avaliar dois modelos de Machine Learning para a detecção de ataques:
+  * RandomForest Classifier
+  * Rede Neural (implementada com Keras/TensorFlow)
+* Visualizar métricas de desempenho dos modelos, como acurácia, precisão, recall, F1-score e relatório de classificação detalhado.
+* Apresentar análise de segurança baseada no desempenho dos modelos.
 
 ## 2. Tecnologias Utilizadas
 
 O desenvolvimento deste projeto envolveu o uso das seguintes tecnologias e bibliotecas Python:
 
-*   **Python 3:** Linguagem de programação principal.
-*   **Streamlit:** Framework para a criação do dashboard web interativo.
-*   **Pandas:** Para manipulação e análise de dados tabulares.
-*   **NumPy:** Para operações numéricas eficientes.
-*   **Scikit-learn:** Para a implementação do modelo RandomForest, pré-processamento de dados (LabelEncoder, MinMaxScaler) e cálculo de métricas de avaliação.
-*   **TensorFlow (com Keras API):** Para a construção, treinamento e avaliação do modelo de Rede Neural Artificial.
-*   **Matplotlib e Seaborn:** Para a geração de gráficos e visualizações, como a matriz de confusão.
-*   **PyArrow:** Para a leitura eficiente de arquivos no formato Parquet.
-*   **Jupyter Notebook/Google Colab:** Utilizado para a exploração inicial dos dados, desenvolvimento e experimentação dos modelos de machine learning.
-*   **Visual Studio Code (VS Code):** Ambiente de desenvolvimento integrado (IDE) recomendado para edição do código.
-*   **Git e GitHub (Recomendado):** Para versionamento de código e colaboração (não abordado diretamente, mas uma boa prática).
+* **Python 3:** Linguagem de programação principal.
+* **Streamlit:** Framework para a criação do dashboard web interativo.
+* **Pandas:** Para manipulação e análise de dados tabulares.
+* **NumPy:** Para operações numéricas eficientes.
+* **Scikit-learn:** Para implementação do modelo RandomForest, pré-processamento de dados (LabelEncoder, MinMaxScaler) e cálculo de métricas de avaliação.
+* **TensorFlow (com Keras API):** Para construção, treinamento e avaliação do modelo de Rede Neural Artificial.
+* **Matplotlib e Seaborn:** Para geração de gráficos e visualizações.
+* **PyArrow:** Para leitura eficiente de arquivos no formato Parquet.
+* **Visual Studio Code (VS Code):** Ambiente de desenvolvimento integrado (IDE) utilizado para edição do código.
 
 ## 3. Dataset
 
 O modelo foi desenvolvido e testado primariamente com o dataset **CICDDoS2019**, que é um conjunto de dados público e amplamente utilizado para pesquisa em detecção de intrusão e ataques DDoS. Este dataset contém uma variedade de ataques DDoS modernos e tráfego benigno.
 
-*   **Fonte Original (Referência):** Canadian Institute for Cybersecurity (CIC) - University of New Brunswick.
-*   **Disponibilidade:** Pode ser encontrado em plataformas como Kaggle (ex: [https://www.kaggle.com/datasets/dhoogla/cicddos2019](https://www.kaggle.com/datasets/dhoogla/cicddos2019)).
+* **Fonte Original:** Canadian Institute for Cybersecurity (CIC) - University of New Brunswick.
+* **Disponibilidade:** Pode ser encontrado em plataformas como Kaggle.
 
-O dashboard permite o upload de arquivos de dados nos formatos `.parquet` ou `.csv`, possibilitando o uso do CICDDoS2019 ou outros datasets com estrutura similar (contendo features de tráfego de rede e uma coluna `Label` indicando se o tráfego é benigno ou um tipo de ataque).
+O dashboard permite o upload de múltiplos arquivos de dados nos formatos `.parquet` ou `.csv`, possibilitando o uso do CICDDoS2019 ou outros datasets com estrutura similar (contendo features de tráfego de rede e uma coluna `Label` indicando se o tráfego é benigno ou um tipo de ataque).
 
 ## 4. Funcionalidades do Dashboard
 
-O dashboard interativo (`app.py`) oferece as seguintes funcionalidades:
+O dashboard interativo oferece as seguintes funcionalidades organizadas em seções:
 
-1.  **Upload de Dados:** Permite ao usuário carregar seu próprio dataset (formato Parquet ou CSV).
-2.  **Visualização Inicial dos Dados:** Exibe informações básicas do dataset carregado, como o número de amostras e features, e as primeiras linhas.
-3.  **Pré-processamento Automatizado:** Realiza a codificação da coluna alvo (`Label`) e a normalização das features numéricas utilizando MinMaxScaler.
-4.  **Divisão dos Dados:** Separa o dataset em conjuntos de treinamento e teste.
-5.  **Seleção de Modelo:** O usuário pode escolher entre treinar um modelo RandomForest ou uma Rede Neural (Keras).
-6.  **Treinamento do Modelo:** Executa o treinamento do modelo selecionado com os dados carregados.
-7.  **Avaliação do Modelo:** Apresenta métricas de desempenho detalhadas:
-    *   Acurácia
-    *   Precisão (ponderada)
-    *   Recall (ponderado)
-    *   F1-Score (ponderado)
-    *   Relatório de Classificação (com métricas por classe)
-    *   Matriz de Confusão visualizada.
+### Análise Exploratória dos Dados
+1. **Informações Básicas:** Exibe métricas fundamentais como total de registros, features, valores ausentes e duplicatas.
+2. **Distribuição das Classes:** Visualiza a distribuição das classes de ataques no dataset original.
+3. **Análise de Tipos de Dados:** Categoriza colunas em categóricas, numéricas e de alta cardinalidade.
+4. **Estatísticas Descritivas:** Apresenta estatísticas detalhadas das features numéricas.
+5. **Amostra dos Dados:** Mostra as primeiras linhas do dataset para inspeção visual.
+
+### Pré-processamento dos Dados
+1. **Limpeza Automatizada:** Remove registros duplicados e valores infinitos/ausentes.
+2. **Remoção de Colunas:** Elimina colunas com valor único e alta correlação automaticamente.
+3. **Codificação de Labels:** Aplica LabelEncoder na variável target.
+4. **Normalização:** Utiliza MinMaxScaler nas features numéricas.
+5. **Visualização Final:** Mostra a distribuição das classes após o processamento.
+
+### Modelagem e Avaliação
+1. **Divisão dos Dados:** Separa automaticamente em 70% treino e 30% teste.
+2. **Seleção de Modelo:** Permite escolher entre RandomForest e Rede Neural.
+3. **Treinamento:** Executa o treinamento com feedback visual de progresso.
+4. **Métricas de Desempenho:** Apresenta acurácia, precisão, recall e F1-score.
+5. **Análise de Segurança:** Interpreta as métricas em termos de detecção de ameaças.
+6. **Relatório Detalhado:** Fornece relatório de classificação completo por classe.
 
 ## 5. Estrutura do Projeto
 
 A estrutura de pastas e arquivos do projeto é:
 
 ```
-ddos-attacks/       # Diretório raiz do projeto
-├── app.py                     # Código principal da aplicação
-├── ddos_pred.py                     # Código do notebook
-├── utils.py                     # Funções importadas do notebook
-├── requirements.txt           # Arquivo com as dependências do Python
+ddos-attacks/                  # Diretório raiz do projeto
+├── __pycache__/              # Cache do Python (gerado automaticamente)
+├── datasets/                 # Pasta contendo todos os datasets
+├── venv/                     # Ambiente virtual Python
+├── app.py                    # Código principal da aplicação Streamlit
+├── utils.py                  # Funções utilitárias para pré-processamento
+├── requirements.txt          # Dependências do Python
+├── README.md                 # Documentação do projeto
+└── .gitignore               # Arquivos ignorados pelo Git
 ```
-
-O arquivo `DDOS_Pred (1).ipynb` (notebook Jupyter original) serve como base para a lógica de processamento e modelagem implementada no `app.py`.
 
 ## 6. Configuração e Execução
 
-Instruções detalhadas para configurar o ambiente, instalar as dependências e executar o dashboard estão disponíveis no arquivo `GUIA_USUARIO.md`.
+### Pré-requisitos
+* Python 3.8 ou superior
+* pip3 instalado
 
-Resumidamente, os passos são:
+### Passos para execução
 
-1.  **Pré-requisitos:** Python 3.8+ e pip3 instalados.
-2.  **Clonar/Baixar o Projeto:** Obtenha os arquivos do projeto.
-3.  **Criar Ambiente Virtual (Recomendado):**
-    ```bash
-    cd ddos-attacks
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
-4.  **Instalar Dependências:**
-    ```bash
-    pip3 install streamlit pandas scikit-learn matplotlib seaborn pyarrow tensorflow
-    ```
-    (Ou, se um `requirements.txt` for fornecido: `pip3 install -r requirements.txt`)
-5.  **Executar o Dashboard:**
-    ```bash
-    streamlit run app.py
-    ```
-6.  Acessar o dashboard no navegador através do URL fornecido.
+1. **Clonar/Baixar o Projeto:**
+   ```bash
+   git clone <url-do-repositorio>
+   cd ddos-attacks
+   ```
+
+2. **Criar Ambiente Virtual (Recomendado):**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   # ou
+   venv\Scripts\activate     # Windows
+   ```
+
+3. **Instalar Dependências:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Executar o Dashboard:**
+   ```bash
+   streamlit run app.py
+   ```
+
+5. **Acessar o Dashboard:**
+   Abra o navegador no endereço fornecido (geralmente http://localhost:8501)
 
 ## 7. Modelos Implementados
 
-### a. RandomForest Classifier
+### RandomForest Classifier
+* Modelo de ensemble learning baseado em múltiplas árvores de decisão.
+* Implementado com scikit-learn.
+* Configuração: 50 estimadores, profundidade máxima 10, mínimo 5 amostras por folha.
+* Vantagens: Rápido, interpretável e robusto contra overfitting.
 
-*   Um modelo de ensemble learning baseado em árvores de decisão.
-*   Implementado utilizando a biblioteca `scikit-learn`.
-*   Conhecido por sua robustez e bom desempenho em diversas tarefas de classificação.
+### Rede Neural Artificial (Keras/TensorFlow)
+* Modelo de deep learning com arquitetura feedforward.
+* Implementado com Keras/TensorFlow.
+* Arquitetura:
+  * Camada de entrada: 128 neurônios com ativação ReLU
+  * Camada oculta: 64 neurônios com ativação ReLU
+  * Camada de saída: Número de classes com ativação Softmax
+* Configuração: Otimizador Adam, loss categorical_crossentropy, 10 épocas.
+* Vantagens: Capacidade de capturar padrões não-lineares complexos.
 
-### b. Rede Neural Artificial (Keras/TensorFlow)
+## 8. Dependências
 
-*   Um modelo de deep learning composto por camadas densas (fully connected layers).
-*   Implementado utilizando a API Keras do TensorFlow.
-*   A arquitetura base no `app.py` inclui:
-    *   Camada de entrada com ativação ReLU.
-    *   Uma camada oculta com ativação ReLU.
-    *   Camada de saída com ativação Softmax (para classificação multiclasse).
-*   Utiliza o otimizador Adam e a função de perda `categorical_crossentropy`.
-*   Os dados da variável alvo (`Label`) são convertidos para o formato one-hot encoding para o treinamento da rede neural.
+As principais dependências estão listadas no arquivo `requirements.txt`:
+
+* streamlit
+* pandas
+* scikit-learn
+* matplotlib
+* seaborn
+* pyarrow
+* tensorflow
+* numpy
+
+## 9. Contribuições e Desenvolvimento
+
+Este projeto foi desenvolvido para fins acadêmicos como parte do Trabalho de Conclusão de Curso no Centro Universitário Facens, e serve como demonstração prática da aplicação de Machine Learning na detecção de ataques DDoS. O código está estruturado de forma modular, facilitando futuras extensões e melhorias.
+
